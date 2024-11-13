@@ -1,15 +1,11 @@
 package com.foodie.application.Entity;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.foodie.application.Service.Configuration.PasswordEncoderConfig;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Data
@@ -18,9 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class User { //Tabela User - tworzyć wiersze w tabeli, metody związane z userem(różne zmiany, np. zmiana hasła czy też loginu)
-
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+public class User {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
     @Column
@@ -35,8 +30,11 @@ public class User { //Tabela User - tworzyć wiersze w tabeli, metody związane 
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
     private List<ShoppingList> shoppingList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Recipe> recipes;
 
     public User(String login, String email, String password) {
         this.login = login;
